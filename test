@@ -1,0 +1,6 @@
+#! /bin/bash
+
+for alfa1 in $(seq 4 0.1 6); do
+    echo -n "$alfa1: "
+    scripts/run_vad.sh $alfa1 | grep TOTAL
+done

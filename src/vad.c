@@ -44,6 +44,8 @@ Features compute_features(const float *x, int N) {
   Features feat;
   //feat.zcr = feat.am = (float) rand()/RAND_MAX;//asigna número aleatorio a zcr, p y am
   feat.p = compute_power(x,N);
+  feat.zcr = compute_zcr(x, N, 16000);
+  feat.am = compute_am(x,N);
   return feat;
 }
 
@@ -51,11 +53,14 @@ Features compute_features(const float *x, int N) {
  * TODO: Init the values of vad_data
  */
 
-VAD_DATA * vad_open(float rate) {
+VAD_DATA * vad_open(float rate, float alfa1, float alfa2) {
   VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
   vad_data->state = ST_INIT;
   vad_data->sampling_rate = rate;
   vad_data->frame_length = rate * FRAME_TIME * 1e-3;
+  vad_data->alfa1 = alfa1;                                  
+  vad_data->alfa2 = alfa2; 
+
   return vad_data;
 }
 
@@ -91,7 +96,7 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x, float alfa1) {//añado el nuevo argu
   switch (vad_data->state) {
   case ST_INIT:
     vad_data->state = ST_SILENCE;
-    vad_data->p0=f.p;
+    vad_data->p0=f.p; // p inicial
     break;
 
   case ST_SILENCE:
@@ -102,6 +107,32 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x, float alfa1) {//añado el nuevo argu
   case ST_VOICE:
     if (f.p < vad_data->p0+alfa1)
       vad_data->state = ST_SILENCE;
+    break;
+
+  case ST_MV:
+      if(vad_data->contador >= 90){//vad_data->contador >= 71
+        vad_data->contador = 0;
+        vad_data->state = ST_SILENCE; //cambiar de estado a maybe
+
+      } else if ((f.p > vad_data->umbral+vad_data->alfa1+vad_data->alfa2 && (vad_data->contador >= 0))){ 
+        vad_data->contador = 0;
+        vad_data->state = ST_VOICE;
+      } else {
+        vad_data->contador++;
+      }
+    break;
+
+  case ST_MS:
+      if(((f.p < vad_data->alfa1) && vad_data->contador >= 50)){ //contador >= 8
+        vad_data->contador = 0;
+        vad_data->state = ST_SILENCE;
+
+      } else if (f.p > vad_data->umbral+vad_data->alfa1+vad_data->alfa2 && (vad_data->contador >= 0)){
+        vad_data->contador = 0;
+        vad_data->state = ST_VOICE;
+      } else {
+        vad_data->contador++;
+      }
     break;
 
   case ST_UNDEF:

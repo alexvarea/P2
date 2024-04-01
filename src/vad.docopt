@@ -10,6 +10,7 @@ Options:
    -o FILE, --output-vad=FILE  Label file with the result of VAD
    -w FILE, --output-wav=FILE  WAVE file with silences cleared
    -1 FLOAT, --alfa1=FLOAT     Incrementar el umbral de detección 1 [default: 5]
+   -2 FLOAT, --alfa2=FLOAT       Incrementar el umbral de detección 2 [default: 5]
    -v, --verbose  Show debug information
    -h, --help     Show this screen
    --version      Show the version of the project

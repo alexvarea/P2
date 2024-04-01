@@ -151,9 +151,15 @@ Ejercicios
    			- K2 = 8 dB
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
-	  Hemos escogido como duración mínima razonable de los segmentos es de 250 ms.
+
+   		Hemos escogido como duración mínima razonable de los segmentos es de 250 ms.
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
+
+		Pese a que en nuestro algoritmo no hemos empleado la tasa de cruces por cero (ZCR), sabemos que podemos sacar diversas conclusiones a partir de la su evolución:
+
+   			- Una tasa más alta de cruces por cero generalmente está asociada con señales de baja energía, como el habla suave, sonidos sordos, o el silencio.
+   			- Los cambios bruscos en la tasa de cruces por cero pueden utilizarse como un indicador para identificar puntos de interés en la señal, como el inicio o final de una palabra.
 
 
 ### Desarrollo del detector de actividad vocal

@@ -144,6 +144,9 @@ Ejercicios
 
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
+   		Teniendo en cuenta que el nivel correspondiente al silencio inicial es de aproximadamente unos 3dB, estableceremos del siguiente modo los umbrales:
+   			- K1 = 3dB
+   			- K2 = 8dB
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
 

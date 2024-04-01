@@ -146,6 +146,7 @@ Ejercicios
 	  estar seguros de que un segmento de señal se corresponde con voz.
    
    		Teniendo en cuenta que el nivel correspondiente al silencio inicial es de aproximadamente unos 3dB, estableceremos del siguiente modo los umbrales:
+   
    			- K1 = 3dB
    			- K2 = 8dB
 

@@ -147,10 +147,11 @@ Ejercicios
    
    		Teniendo en cuenta que el nivel correspondiente al silencio inicial es de aproximadamente unos 3dB, estableceremos del siguiente modo los umbrales:
    
-   			- K1 = 3dB
-   			- K2 = 8dB
+   			- K1 = 3 dB
+   			- K2 = 8 dB
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
+	  Hemos escogido como duración mínima razonable de los segmentos es de 250 ms.
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 

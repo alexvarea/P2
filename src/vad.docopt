@@ -9,6 +9,9 @@ Options:
    -i FILE, --input-wav=FILE   WAVE file for voice activity detection
    -o FILE, --output-vad=FILE  Label file with the result of VAD
    -w FILE, --output-wav=FILE  WAVE file with silences cleared
+   -1 FLOAT, --alfa1=FLOAT     FLOAT incrementar el umbral de detection 1 [default: 0.1]
+   -2 FLOAT, --alfa2=FLOAT     FLOAT incrementar el umbral de detection 2 [default: 10.3]
+   -3 FLOAT, --MUMAX=FLOAT     FLOAT maximo tiempo en estado indefinido en ms [default:230]
    -v, --verbose  Show debug information
    -h, --help     Show this screen
    --version      Show the version of the project

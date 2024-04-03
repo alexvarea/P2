@@ -1,0 +1,53 @@
+0.1 alfa1 0.4
+9.5 alfa2 11
+180 MUMAX 300
+
+
+int k1 = (vad_data->p0) + alfa1;
+  int k2 = k1 + alfa2;
+
+  switch (vad_data->state) {
+  case ST_INIT:
+    vad_data->state = ST_SILENCE;
+    vad_data->p0 = f.p;
+    break;
+
+
+
+  case ST_SILENCE:
+    if (f.p >= k1)
+      vad_data->state = ST_MV;
+
+    break;
+
+
+  case ST_VOICE:
+    if (f.p <= k2){
+      vad_data->state = ST_MS;
+    }else if(f.p <)
+    break;
+
+  case ST_MS:
+    if(f.p <= k1){
+      vad_data ->state = ST_SILENCE;
+    }else if(f.p >= k2){
+      vad_data->state = ST_VOICE;
+    }
+      
+    break;
+  
+  case ST_MV:
+    if(f.p > k2){
+      vad_data->state = ST_VOICE;
+    }else if(f.p < k1){
+      vad_data ->state = ST_SILENCE;
+    }
+    break;
+  }
+
+  /*if (vad_data->state == ST_SILENCE ||
+      vad_data->state == ST_VOICE)
+    return vad_data->state;
+  else
+    return ST_UNDEF;*/
+    return vad_data->state;

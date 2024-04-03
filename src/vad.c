@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "pav_analysis.h"
 #include "vad.h"
 
 const float FRAME_TIME = 10.0F; /* in ms. */
@@ -13,7 +13,7 @@ const float FRAME_TIME = 10.0F; /* in ms. */
  */
 
 const char *state_str[] = {
-  "UNDEF", "S", "V", "INIT"
+  "UNDEF", "S", "V", "INIT", "MV", "MS"
 };
 
 const char *state2str(VAD_STATE st) {
@@ -42,7 +42,8 @@ Features compute_features(const float *x, int N) {
    * For the moment, compute random value between 0 and 1 
    */
   Features feat;
-  feat.zcr = feat.p = feat.am = (float) rand()/RAND_MAX;
+  // feat.zcr = feat.p = feat.am = (float) rand()/RAND_MAX;
+  feat.p = compute_power(x,N);
   return feat;
 }
 
@@ -55,6 +56,11 @@ VAD_DATA * vad_open(float rate) {
   vad_data->state = ST_INIT;
   vad_data->sampling_rate = rate;
   vad_data->frame_length = rate * FRAME_TIME * 1e-3;
+
+ 
+  //vad_data->DMIN = DMIN; 
+
+  
   return vad_data;
 }
 
@@ -77,7 +83,7 @@ unsigned int vad_frame_size(VAD_DATA *vad_data) {
  * using a Finite State Automata
  */
 
-VAD_STATE vad(VAD_DATA *vad_data, float *x) {
+VAD_STATE vad(VAD_DATA *vad_data, float *x, float alfa1, float alfa2) { //nuevo parametro a la funcion
 
   /* 
    * TODO: You can change this, using your own features,
@@ -87,32 +93,71 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
   Features f = compute_features(x, vad_data->frame_length);
   vad_data->last_feature = f.p; /* save feature, in case you want to show */
 
+  //printf("%d\n",vad_data->MDMAX);
+
   switch (vad_data->state) {
   case ST_INIT:
     vad_data->state = ST_SILENCE;
+    vad_data->p0 = f.p;
+    vad_data->k1 =  vad_data->p0 + alfa1;
+    vad_data->k2 = vad_data->k1 + alfa2;
+
+   
+    vad_data->MDCOUNT = 0;
+    //vad_data->DCOUNT = 0;
+    
     break;
 
   case ST_SILENCE:
-    if (f.p > 0.95)
+    
+    vad_data->MDCOUNT = 0;
+    if(f.p > vad_data->k1){ //ki > k1
+      vad_data -> state = ST_MV;
+      
+    }
+    break;
+
+  case ST_MV:
+    vad_data -> MDCOUNT++;
+    
+    if(f.p > vad_data->k2){ //ki > k2
       vad_data->state = ST_VOICE;
-    break;
+      vad_data->MDCOUNT = 0;
 
+    }else if((vad_data -> MDCOUNT >= vad_data->MDMAX)||(f.p < vad_data -> k1)){ //timeout o ki < k1
+      vad_data->state = ST_SILENCE; 
+      vad_data->MDCOUNT = 0;
+    }
+    break;
+  
   case ST_VOICE:
-    if (f.p < 0.01)
-      vad_data->state = ST_SILENCE;
+    //vad_data ->DCOUNT++;
+    
+    if(f.p < vad_data -> k2){ //ki < k2
+      vad_data -> state = ST_MS;
+    }
     break;
+  
+  case ST_MS:
 
-  case ST_UNDEF:
+    vad_data -> MDCOUNT++;
+
+    if(f.p > vad_data-> k2){
+      vad_data -> state = ST_VOICE;
+    }else if((vad_data -> MDCOUNT >= vad_data->MDMAX)||(f.p < vad_data -> k1)){
+      vad_data->state = ST_SILENCE;
+    }
     break;
   }
+  return vad_data -> state;
 
-  if (vad_data->state == ST_SILENCE ||
-      vad_data->state == ST_VOICE)
-    return vad_data->state;
-  else
-    return ST_UNDEF;
+  
 }
-
 void vad_show_state(const VAD_DATA *vad_data, FILE *out) {
   fprintf(out, "%d\t%f\n", vad_data->state, vad_data->last_feature);
+}
+
+void set_param(VAD_DATA *vad_data,int MDMAXi){ //setter de parámetro
+  vad_data->MDMAX = MDMAXi;
+
 }

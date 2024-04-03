@@ -1,5 +1,8 @@
 #!/bin/bash
 
+alfa1=${1:-8}
+alfa2=${2:-3} #segundo umbral
+MUMAX=${3:-250} #tiempo maximo en estado indefinido
 # Be sure that this file has execution permissions:
 # Use the nautilus explorer or chmod +x run_vad.sh
 
@@ -10,12 +13,12 @@ set -o pipefail
 # Write here the name and path of your program and database
 DIR_P2=$HOME/PAV/P2
 DB=$DIR_P2/db.v4
-CMD=$DIR_P2/bin/vad
+CMD="$DIR_P2/bin/vad -1 $alfa1 -2 $alfa2 -3 $MUMAX"
 
 for filewav in $DB/*/*wav; do
 #    echo
     echo "**************** $filewav ****************"
-    if [[ ! -f $filewav ]]; then 
+    if [[ ! -f $filewav ]]; then ''
 	    echo "Wav file not found: $filewav" >&2
 	    exit 1
     fi

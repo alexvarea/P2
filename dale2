@@ -1,0 +1,18 @@
+#!/bin/bash
+
+resultados=$(mktemp)
+trap "rm -f $resultados" EXIT
+
+for alfa1 in $(seq 0.1 0.1 0.3); do
+    for alfa2 in $(seq 10.2 0.1 10.4); do
+        for MUMAX in $(seq 150 10 300); do
+            total_line=$(scripts/run_vad.sh $alfa1 $alfa2 $MUMAX | grep TOTAL)
+            total_value=$(echo $total_line | awk '{print $NF}')
+            echo "$alfa1 $alfa2 $MUMAX $total_value"
+            echo "$alfa1 $alfa2 $MUMAX $total_value" >> $resultados
+        done
+    done
+done
+
+sort -k3 -nr $resultados > resultados_ordenados.txt
+rm $resultados

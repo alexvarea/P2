@@ -1,0 +1,9 @@
+#! /bin/bash
+
+for alfa1 in $(seq 5 0.1 10); do
+    for alfa2 in $(seq 3 0.1 8); do       
+        echo -n "$alfa1: "
+        echo -n "$alfa2: "
+        scripts/run_vad.sh $alfa1 $alfa2 | grep TOTAL
+    done    
+done

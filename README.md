@@ -136,15 +136,28 @@ Ejercicios
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
 
+  ![Captura wavesurfer](pav1.png)
+
+
 
 - A la vista de la gráfica, indique qué valores considera adecuados para las magnitudes siguientes:
 
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
+   
+   		Teniendo en cuenta que el nivel correspondiente al silencio inicial es de aproximadamente unos 3dB, estableceremos del siguiente modo los umbrales:  
+   			-	K1 = 3 dB  
+   			-	K2 = 8 dB
 
-	* Duración mínima razonable de los segmentos de voz y silencio.
+	* Duración mínima razonable de los segmentos de voz y silencio.  
+
+   		Hemos escogido como duración mínima razonable de los segmentos es de 250 ms.
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
+
+		Pese a que en nuestro algoritmo no hemos empleado la tasa de cruces por cero (ZCR), sabemos que podemos sacar diversas conclusiones a partir de la su evolución:  
+   			-	Una tasa más alta de cruces por cero generalmente está asociada con señales de baja energía, como el habla suave, sonidos sordos, o el silencio.  
+   			-	Los cambios bruscos en la tasa de cruces por cero pueden utilizarse como un indicador para identificar puntos de interés en la señal, como el inicio o final de una palabra.  
 
 
 ### Desarrollo del detector de actividad vocal
